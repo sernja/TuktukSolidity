@@ -8,33 +8,15 @@ contract Racers is RewardRance {
     uint8[] private victoryProbabilityCM = [1, 2, 2, 3, 3, 3, 3, 4, 4, 4]; //1:10%, 2:20%, 3:40%, 4:30%
     uint8[] private victoryProbabilityRare = [1, 2, 2, 2, 3, 3, 3, 3, 4, 4];
     uint8[] private victoryProbabilityEpic = [1, 1, 2, 2, 3, 3, 3, 3, 4, 4];
-    uint256 randNonce = 0;
-
-    function randMod(uint256 _modulus) internal returns (uint256) {
-        uint256 i = uint256(
-            keccak256(abi.encodePacked(block.timestamp, randNonce))
-        ) % _modulus;
-        randNonce++;
-        return i;
-    }
 
     modifier ownerOf(uint256 _productId) {
         require(msg.sender == carToOwner[_productId]);
         _;
     }
 
-    function _compareStrings(string memory a, string memory b)
-        internal
-        pure
-        returns (bool)
-    {
-        return (keccak256(abi.encodePacked((a))) ==
-            keccak256(abi.encodePacked((b))));
-    }
-
     function tukracers(uint256 _productId) public ownerOf(_productId) {
         Car storage mycar = cars[_productId];
-        uint256 rand = randMod(10);
+        uint256 rand = _randomNumber() % 10;
         uint256 rankCm = victoryProbabilityCM[rand];
         uint256 rankRare = victoryProbabilityRare[rand];
         uint256 rankEpic = victoryProbabilityEpic[rand];

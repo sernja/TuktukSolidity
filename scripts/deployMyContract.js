@@ -1,8 +1,8 @@
 async function main() {
-    const MyContract = await ethers.getContractFactory("MyContract");
-    const myContract = await MyContract.deploy("My Contract");
+    const NFT = await ethers.getContractFactory("NFT");
+    const nft = await MyContract.deploy("NFT");
 
-    console.log("My Contract deployed to:", myContract.address);
+    // console.log("My Contract deployed to:", myContract.address);
 }
 
 main()

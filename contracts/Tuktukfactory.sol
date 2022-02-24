@@ -5,7 +5,11 @@ pragma solidity >=0.7.0 <0.9.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
-contract Tuktukfactory is Ownable {
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+
+import "./ProductDetails.sol";
+
+contract Tuktukfactory is Ownable, ERC721, ProductDetails {
     event NewCar(
         uint256 carId,
         string _img,
@@ -15,7 +19,7 @@ contract Tuktukfactory is Ownable {
         uint8 _level,
         uint256 _exp,
         uint8 _fuel,
-        uint8 _power,
+        uint16 _power,
         uint8 _speed,
         uint8 _drift,
         uint256 _dna
@@ -23,6 +27,8 @@ contract Tuktukfactory is Ownable {
 
     uint256 dnaDigits = 16;
     uint256 dnaModulus = 10**dnaDigits;
+
+    constructor() ERC721("TUKTUK", "TUK") {}
 
     struct Car {
         string _img;
@@ -32,7 +38,7 @@ contract Tuktukfactory is Ownable {
         uint8 level;
         uint256 exp;
         uint8 fuel;
-        uint8 power;
+        uint16 power;
         uint8 speed;
         uint8 drift;
         uint256 dna;
@@ -43,6 +49,10 @@ contract Tuktukfactory is Ownable {
     mapping(uint256 => address) public carToOwner;
     mapping(address => uint256) ownerCarCount;
 
+    function createNFT(uint256 _id) internal {
+        _safeMint(msg.sender, _id);
+    }
+
     function _createCar(
         string memory _img,
         string memory _name,
@@ -51,7 +61,7 @@ contract Tuktukfactory is Ownable {
         uint8 _level,
         uint256 _exp,
         uint8 _fuel,
-        uint8 _power,
+        uint16 _power,
         uint8 _speed,
         uint8 _drift,
         uint256 _dna
@@ -74,6 +84,7 @@ contract Tuktukfactory is Ownable {
         uint256 id = cars.length - 1;
         carToOwner[id] = msg.sender;
         ownerCarCount[msg.sender]++;
+        createNFT(id);
         emit NewCar(
             id,
             _img,
@@ -90,40 +101,21 @@ contract Tuktukfactory is Ownable {
         );
     }
 
-    function _generateRandomDna(string memory _img)
-        private
-        view
-        returns (uint256)
-    {
-        uint256 rand = uint256(keccak256(abi.encodePacked(_img)));
-        return rand % dnaModulus;
-    }
-
-    function createRandomCar(
-        string memory _img,
-        string memory _name,
-        string memory _cartype,
-        string memory _license,
-        uint8 _level,
-        uint256 _exp,
-        uint8 _fuel,
-        uint8 _power,
-        uint8 _speed,
-        uint8 _drift
-    ) public {
-        uint256 randDna = _generateRandomDna(_img);
+    function createRandomCar(string memory _img) public {
+        string memory _cartype = _createType();
+        uint256 randDna = _randomNumber() % dnaModulus;
         randDna = randDna - (randDna % 100);
         _createCar(
             _img,
-            _name,
+            _createName(_cartype),
             _cartype,
-            _license,
-            _level,
-            _exp,
-            _fuel,
-            _power,
-            _speed,
-            _drift,
+            _createLicense(),
+            1,
+            0,
+            _createFuel(_cartype),
+            _createPower(_cartype),
+            _createSpeed(_cartype),
+            _createDrift(_cartype),
             randDna
         );
     }
