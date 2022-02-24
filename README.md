@@ -1,1 +1,4 @@
 # TuktukSolidity
+
+## install
+npm i
