@@ -2,14 +2,14 @@
 
 pragma solidity >=0.7.0 <0.9.0;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
-import "./ProductDetails.sol";
 
-contract Tuktukfactory is Ownable, ERC721, ProductDetails {
+import "./ProductDetails.sol";
+// import "./Productownership.sol";
+
+contract Tuktukfactory is ProductDetails, ERC721 {
     event NewCar(
         uint256 carId,
         string _img,
@@ -28,7 +28,6 @@ contract Tuktukfactory is Ownable, ERC721, ProductDetails {
     uint256 dnaDigits = 16;
     uint256 dnaModulus = 10**dnaDigits;
 
-    constructor() ERC721("TUKTUK", "TUK") {}
 
     struct Car {
         string _img;
@@ -46,11 +45,13 @@ contract Tuktukfactory is Ownable, ERC721, ProductDetails {
 
     Car[] public cars;
 
-    mapping(uint256 => address) public carToOwner;
-    mapping(address => uint256) ownerCarCount;
+    // mapping(uint256 => address) public carToOwner;
+    // mapping(address => uint256) ownerCarCount;
 
-    function createNFT(uint256 _id) internal {
-        _safeMint(msg.sender, _id);
+    constructor() ERC721("TUKTUK", "TUK") {}
+
+    function _createNFT(uint256 tokenId) internal {
+        _safeMint(msg.sender, tokenId);
     }
 
     function _createCar(
@@ -82,9 +83,9 @@ contract Tuktukfactory is Ownable, ERC721, ProductDetails {
             )
         );
         uint256 id = cars.length - 1;
-        carToOwner[id] = msg.sender;
-        ownerCarCount[msg.sender]++;
-        createNFT(id);
+        // carToOwner[id] = msg.sender;
+        // ownerCarCount[msg.sender]++;
+        _createNFT(id);
         emit NewCar(
             id,
             _img,
