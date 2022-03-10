@@ -45,8 +45,8 @@ contract Tuktukfactory is ProductDetails, ERC721 {
 
     Car[] public cars;
 
-    // mapping(uint256 => address) public carToOwner;
-    // mapping(address => uint256) ownerCarCount;
+    mapping(uint256 => address) public carToOwner;
+    mapping(address => uint256) ownerCarCount;
 
     constructor() ERC721("TUKTUK", "TUK") {}
 
@@ -83,8 +83,8 @@ contract Tuktukfactory is ProductDetails, ERC721 {
             )
         );
         uint256 id = cars.length - 1;
-        // carToOwner[id] = msg.sender;
-        // ownerCarCount[msg.sender]++;
+        carToOwner[id] = msg.sender;
+        ownerCarCount[msg.sender]++;
         _createNFT(id);
         emit NewCar(
             id,

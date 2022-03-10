@@ -47,19 +47,19 @@ contract Racers is RewardRance {
         }
     }
 
-    // function getCarByOwner(address _owner)
-    //     external
-    //     view
-    //     returns (uint256[] memory)
-    // {
-    //     uint256[] memory result = new uint256[](ownerCarCount[_owner]);
-    //     uint256 counter = 0;
-    //     for (uint256 i = 0; i < cars.length; i++) {
-    //         if (carToOwner[i] == _owner) {
-    //             result[counter] = i;
-    //             counter++;
-    //         }
-    //     }
-    //     return result;
-    // }
+    function getCarByOwner(address _owner)
+        external
+        view
+        returns (uint256[] memory)
+    {
+        uint256[] memory result = new uint256[](ownerCarCount[_owner]);
+        uint256 counter = 0;
+        for (uint256 i = 0; i < cars.length; i++) {
+            if (carToOwner[i] == _owner) {
+                result[counter] = i;
+                counter++;
+            }
+        }
+        return result;
+    }
 }
